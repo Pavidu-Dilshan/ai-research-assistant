@@ -1,0 +1,520 @@
+2026-02-01 02:06:14 | INFO     | app.utils.logger | Logging initialized at INFO level
+2026-02-01 02:06:14 | INFO     | app.utils.logger | Log file: C:\Users\pavic\OneDrive\Desktop\research-assistant\logs\app.log
+2026-02-01 02:06:14 | INFO     | app.main | ================================================================================
+2026-02-01 02:06:14 | INFO     | app.main | Starting AI Research Assistant v1.0.0
+2026-02-01 02:06:14 | INFO     | app.main | ================================================================================
+2026-02-01 02:06:14 | INFO     | app.main | Loading embedding model...
+2026-02-01 02:06:14 | INFO     | app.main | ✓ Embedding model loaded successfully
+2026-02-01 02:06:14 | INFO     | app.main | Connecting to vector database...
+2026-02-01 02:06:14 | ERROR    | chromadb.telemetry.product.posthog | Failed to send telemetry event CollectionGetEvent: capture() takes 1 positional argument but 3 were given
+2026-02-01 02:06:14 | INFO     | app.main | ✓ Vector database connected: {'total_chunks': 0, 'total_documents': 0, 'collection_name': 'research_documents', 'embedding_dimension': 384}
+2026-02-01 02:06:14 | INFO     | app.main | ================================================================================
+2026-02-01 02:06:14 | INFO     | app.main | Application ready to receive requests
+2026-02-01 02:06:14 | INFO     | app.main | API: http://0.0.0.0:8000
+2026-02-01 02:06:14 | INFO     | app.main | Docs: http://0.0.0.0:8000/docs
+2026-02-01 02:06:14 | INFO     | app.main | ================================================================================
+2026-02-01 02:11:16 | INFO     | app.services.document_service | Ingesting document: ai_overview.txt (690 chars) as 20260131_231116_ai_overview.txt_9ab7a945
+2026-02-01 02:11:16 | INFO     | app.services.document_service | Created 2 chunks for 20260131_231116_ai_overview.txt_9ab7a945
+2026-02-01 02:11:16 | INFO     | app.services.document_service | Generated 2 embeddings (dim=384)
+2026-02-01 02:11:16 | ERROR    | app.services.search_service | Failed to store chunks: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.240885 which is a datetime in add.
+2026-02-01 02:11:16 | ERROR    | app.api.routes.ingest | Ingestion failed: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.240885 which is a datetime in add.
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.240885 which is a datetime
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 100, in store_chunks
+    self._collection.add(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\Collection.py", line 81, in add
+    add_request = self._validate_and_prepare_add_request(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 93, in wrapper
+    raise type(e)(msg).with_traceback(e.__traceback__)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.240885 which is a datetime in add.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\api\routes\ingest.py", line 51, in ingest_text_document
+    await search_service.store_chunks(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 114, in store_chunks
+    raise RuntimeError(f"Vector storage failed: {e}")
+RuntimeError: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.240885 which is a datetime in add.
+2026-02-01 02:11:16 | INFO     | app.services.document_service | Ingesting document: ml_techniques.txt (690 chars) as 20260131_231116_ml_techniques.txt_3db8d1e7
+2026-02-01 02:11:16 | INFO     | app.services.document_service | Created 2 chunks for 20260131_231116_ml_techniques.txt_3db8d1e7
+2026-02-01 02:11:16 | INFO     | app.services.document_service | Generated 2 embeddings (dim=384)
+2026-02-01 02:11:16 | ERROR    | app.services.search_service | Failed to store chunks: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.276873 which is a datetime in add.
+2026-02-01 02:11:16 | ERROR    | app.api.routes.ingest | Ingestion failed: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.276873 which is a datetime in add.
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.276873 which is a datetime
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 100, in store_chunks
+    self._collection.add(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\Collection.py", line 81, in add
+    add_request = self._validate_and_prepare_add_request(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 93, in wrapper
+    raise type(e)(msg).with_traceback(e.__traceback__)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.276873 which is a datetime in add.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\api\routes\ingest.py", line 51, in ingest_text_document
+    await search_service.store_chunks(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 114, in store_chunks
+    raise RuntimeError(f"Vector storage failed: {e}")
+RuntimeError: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.276873 which is a datetime in add.
+2026-02-01 02:11:16 | INFO     | app.services.document_service | Ingesting document: healthcare_ai.txt (694 chars) as 20260131_231116_healthcare_ai.txt_ff32e763
+2026-02-01 02:11:16 | INFO     | app.services.document_service | Created 2 chunks for 20260131_231116_healthcare_ai.txt_ff32e763
+2026-02-01 02:11:16 | INFO     | app.services.document_service | Generated 2 embeddings (dim=384)
+2026-02-01 02:11:16 | ERROR    | app.services.search_service | Failed to store chunks: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.306934 which is a datetime in add.
+2026-02-01 02:11:16 | ERROR    | app.api.routes.ingest | Ingestion failed: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.306934 which is a datetime in add.
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.306934 which is a datetime
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 100, in store_chunks
+    self._collection.add(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\Collection.py", line 81, in add
+    add_request = self._validate_and_prepare_add_request(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 93, in wrapper
+    raise type(e)(msg).with_traceback(e.__traceback__)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.306934 which is a datetime in add.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\api\routes\ingest.py", line 51, in ingest_text_document
+    await search_service.store_chunks(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 114, in store_chunks
+    raise RuntimeError(f"Vector storage failed: {e}")
+RuntimeError: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:11:16.306934 which is a datetime in add.
+2026-02-01 02:12:31 | INFO     | app.services.document_service | Ingesting document: ml_intro.txt (98 chars) as 20260131_231231_ml_intro.txt_a1bf2590
+2026-02-01 02:12:31 | INFO     | app.services.document_service | Created 1 chunks for 20260131_231231_ml_intro.txt_a1bf2590
+2026-02-01 02:12:31 | INFO     | app.services.document_service | Generated 1 embeddings (dim=384)
+2026-02-01 02:12:31 | ERROR    | app.services.search_service | Failed to store chunks: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:12:31.582075 which is a datetime in add.
+2026-02-01 02:12:31 | ERROR    | app.api.routes.ingest | Ingestion failed: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:12:31.582075 which is a datetime in add.
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:12:31.582075 which is a datetime
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 100, in store_chunks
+    self._collection.add(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\Collection.py", line 81, in add
+    add_request = self._validate_and_prepare_add_request(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 93, in wrapper
+    raise type(e)(msg).with_traceback(e.__traceback__)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:12:31.582075 which is a datetime in add.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\api\routes\ingest.py", line 51, in ingest_text_document
+    await search_service.store_chunks(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 114, in store_chunks
+    raise RuntimeError(f"Vector storage failed: {e}")
+RuntimeError: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:12:31.582075 which is a datetime in add.
+2026-02-01 02:12:33 | INFO     | app.services.document_service | Ingesting document: ml_intro.txt (98 chars) as 20260131_231233_ml_intro.txt_9fde03d2
+2026-02-01 02:12:33 | INFO     | app.services.document_service | Created 1 chunks for 20260131_231233_ml_intro.txt_9fde03d2
+2026-02-01 02:12:33 | INFO     | app.services.document_service | Generated 1 embeddings (dim=384)
+2026-02-01 02:12:33 | ERROR    | app.services.search_service | Failed to store chunks: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:12:33.326136 which is a datetime in add.
+2026-02-01 02:12:33 | ERROR    | app.api.routes.ingest | Ingestion failed: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:12:33.326136 which is a datetime in add.
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:12:33.326136 which is a datetime
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 100, in store_chunks
+    self._collection.add(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\Collection.py", line 81, in add
+    add_request = self._validate_and_prepare_add_request(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 93, in wrapper
+    raise type(e)(msg).with_traceback(e.__traceback__)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:12:33.326136 which is a datetime in add.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\api\routes\ingest.py", line 51, in ingest_text_document
+    await search_service.store_chunks(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 114, in store_chunks
+    raise RuntimeError(f"Vector storage failed: {e}")
+RuntimeError: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:12:33.326136 which is a datetime in add.
+2026-02-01 02:13:01 | ERROR    | chromadb.telemetry.product.posthog | Failed to send telemetry event CollectionQueryEvent: capture() takes 1 positional argument but 3 were given
+2026-02-01 02:13:01 | INFO     | app.services.search_service | Search query 'What is machine learning?...' returned 0 results (threshold: 0.3)
+2026-02-01 02:14:11 | INFO     | app.main | Shutting down application...
+2026-02-01 02:14:11 | INFO     | app.main | Cleanup complete
+2026-02-01 02:14:49 | INFO     | app.utils.logger | Logging initialized at INFO level
+2026-02-01 02:14:49 | INFO     | app.utils.logger | Log file: C:\Users\pavic\OneDrive\Desktop\research-assistant\logs\app.log
+2026-02-01 02:14:49 | INFO     | app.main | ================================================================================
+2026-02-01 02:14:49 | INFO     | app.main | Starting AI Research Assistant v1.0.0
+2026-02-01 02:14:49 | INFO     | app.main | ================================================================================
+2026-02-01 02:14:49 | INFO     | app.main | Loading embedding model...
+2026-02-01 02:14:49 | INFO     | app.main | ✓ Embedding model loaded successfully
+2026-02-01 02:14:49 | INFO     | app.main | Connecting to vector database...
+2026-02-01 02:14:49 | ERROR    | chromadb.telemetry.product.posthog | Failed to send telemetry event CollectionGetEvent: capture() takes 1 positional argument but 3 were given
+2026-02-01 02:14:49 | INFO     | app.main | ✓ Vector database connected: {'total_chunks': 0, 'total_documents': 0, 'collection_name': 'research_documents', 'embedding_dimension': 384}
+2026-02-01 02:14:49 | INFO     | app.main | ================================================================================
+2026-02-01 02:14:49 | INFO     | app.main | Application ready to receive requests
+2026-02-01 02:14:49 | INFO     | app.main | API: http://0.0.0.0:8000
+2026-02-01 02:14:49 | INFO     | app.main | Docs: http://0.0.0.0:8000/docs
+2026-02-01 02:14:49 | INFO     | app.main | ================================================================================
+2026-02-01 02:14:55 | INFO     | app.services.document_service | Ingesting document: ai_overview.txt (690 chars) as 20260131_231455_ai_overview.txt_d41c32c4
+2026-02-01 02:14:55 | INFO     | app.services.document_service | Created 2 chunks for 20260131_231455_ai_overview.txt_d41c32c4
+2026-02-01 02:14:55 | INFO     | app.services.document_service | Generated 2 embeddings (dim=384)
+2026-02-01 02:14:55 | ERROR    | app.services.search_service | Failed to store chunks: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.798693 which is a datetime in add.
+2026-02-01 02:14:55 | ERROR    | app.api.routes.ingest | Ingestion failed: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.798693 which is a datetime in add.
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.798693 which is a datetime
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 100, in store_chunks
+    self._collection.add(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\Collection.py", line 81, in add
+    add_request = self._validate_and_prepare_add_request(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 93, in wrapper
+    raise type(e)(msg).with_traceback(e.__traceback__)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.798693 which is a datetime in add.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\api\routes\ingest.py", line 51, in ingest_text_document
+    await search_service.store_chunks(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 114, in store_chunks
+    raise RuntimeError(f"Vector storage failed: {e}")
+RuntimeError: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.798693 which is a datetime in add.
+2026-02-01 02:14:55 | INFO     | app.services.document_service | Ingesting document: ml_techniques.txt (690 chars) as 20260131_231455_ml_techniques.txt_35c37245
+2026-02-01 02:14:55 | INFO     | app.services.document_service | Created 2 chunks for 20260131_231455_ml_techniques.txt_35c37245
+2026-02-01 02:14:55 | INFO     | app.services.document_service | Generated 2 embeddings (dim=384)
+2026-02-01 02:14:55 | ERROR    | app.services.search_service | Failed to store chunks: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.859925 which is a datetime in add.
+2026-02-01 02:14:55 | ERROR    | app.api.routes.ingest | Ingestion failed: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.859925 which is a datetime in add.
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.859925 which is a datetime
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 100, in store_chunks
+    self._collection.add(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\Collection.py", line 81, in add
+    add_request = self._validate_and_prepare_add_request(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 93, in wrapper
+    raise type(e)(msg).with_traceback(e.__traceback__)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.859925 which is a datetime in add.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\api\routes\ingest.py", line 51, in ingest_text_document
+    await search_service.store_chunks(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 114, in store_chunks
+    raise RuntimeError(f"Vector storage failed: {e}")
+RuntimeError: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.859925 which is a datetime in add.
+2026-02-01 02:14:55 | INFO     | app.services.document_service | Ingesting document: healthcare_ai.txt (694 chars) as 20260131_231455_healthcare_ai.txt_3ecc8a05
+2026-02-01 02:14:55 | INFO     | app.services.document_service | Created 2 chunks for 20260131_231455_healthcare_ai.txt_3ecc8a05
+2026-02-01 02:14:55 | INFO     | app.services.document_service | Generated 2 embeddings (dim=384)
+2026-02-01 02:14:55 | ERROR    | app.services.search_service | Failed to store chunks: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.897282 which is a datetime in add.
+2026-02-01 02:14:55 | ERROR    | app.api.routes.ingest | Ingestion failed: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.897282 which is a datetime in add.
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.897282 which is a datetime
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 100, in store_chunks
+    self._collection.add(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\Collection.py", line 81, in add
+    add_request = self._validate_and_prepare_add_request(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 93, in wrapper
+    raise type(e)(msg).with_traceback(e.__traceback__)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 90, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\models\CollectionCommon.py", line 207, in _validate_and_prepare_add_request
+    validate_insert_record_set(record_set=add_records)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 230, in validate_insert_record_set
+    validate_metadatas(record_set["metadatas"])
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 592, in validate_metadatas
+    validate_metadata(metadata)
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\venv\Lib\site-packages\chromadb\api\types.py", line 558, in validate_metadata
+    raise ValueError(
+ValueError: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.897282 which is a datetime in add.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\api\routes\ingest.py", line 51, in ingest_text_document
+    await search_service.store_chunks(
+  File "C:\Users\pavic\OneDrive\Desktop\research-assistant\app\services\search_service.py", line 114, in store_chunks
+    raise RuntimeError(f"Vector storage failed: {e}")
+RuntimeError: Vector storage failed: Expected metadata value to be a str, int, float or bool, got 2026-01-31 23:14:55.897282 which is a datetime in add.
+2026-02-01 02:19:10 | INFO     | app.main | Shutting down application...
+2026-02-01 02:19:10 | INFO     | app.main | Cleanup complete
+2026-02-01 02:19:31 | INFO     | app.utils.logger | Logging initialized at INFO level
+2026-02-01 02:19:31 | INFO     | app.utils.logger | Log file: C:\Users\pavic\OneDrive\Desktop\research-assistant\logs\app.log
+2026-02-01 02:19:31 | INFO     | app.main | ================================================================================
+2026-02-01 02:19:31 | INFO     | app.main | Starting AI Research Assistant v1.0.0
+2026-02-01 02:19:31 | INFO     | app.main | ================================================================================
+2026-02-01 02:19:31 | INFO     | app.main | Loading embedding model...
+2026-02-01 02:19:31 | INFO     | app.main | ✓ Embedding model loaded successfully
+2026-02-01 02:19:31 | INFO     | app.main | Connecting to vector database...
+2026-02-01 02:19:31 | ERROR    | chromadb.telemetry.product.posthog | Failed to send telemetry event CollectionGetEvent: capture() takes 1 positional argument but 3 were given
+2026-02-01 02:19:31 | INFO     | app.main | ✓ Vector database connected: {'total_chunks': 0, 'total_documents': 0, 'collection_name': 'research_documents', 'embedding_dimension': 384}
+2026-02-01 02:19:31 | INFO     | app.main | ================================================================================
+2026-02-01 02:19:31 | INFO     | app.main | Application ready to receive requests
+2026-02-01 02:19:31 | INFO     | app.main | API: http://0.0.0.0:8000
+2026-02-01 02:19:31 | INFO     | app.main | Docs: http://0.0.0.0:8000/docs
+2026-02-01 02:19:31 | INFO     | app.main | ================================================================================
+2026-02-01 02:20:03 | INFO     | app.services.document_service | Ingesting document: ai_overview.txt (690 chars) as 20260131_232003_ai_overview.txt_f620b698
+2026-02-01 02:20:03 | INFO     | app.services.document_service | Created 2 chunks for 20260131_232003_ai_overview.txt_f620b698
+2026-02-01 02:20:03 | INFO     | app.services.document_service | Generated 2 embeddings (dim=384)
+2026-02-01 02:20:03 | ERROR    | chromadb.telemetry.product.posthog | Failed to send telemetry event CollectionAddEvent: capture() takes 1 positional argument but 3 were given
+2026-02-01 02:20:03 | INFO     | app.services.search_service | Stored 2 chunks for document 20260131_232003_ai_overview.txt_f620b698 (total items: 2)
+2026-02-01 02:20:03 | INFO     | app.services.document_service | Ingesting document: ml_techniques.txt (690 chars) as 20260131_232003_ml_techniques.txt_2a936684
+2026-02-01 02:20:03 | INFO     | app.services.document_service | Created 2 chunks for 20260131_232003_ml_techniques.txt_2a936684
+2026-02-01 02:20:03 | INFO     | app.services.document_service | Generated 2 embeddings (dim=384)
+2026-02-01 02:20:03 | INFO     | app.services.search_service | Stored 2 chunks for document 20260131_232003_ml_techniques.txt_2a936684 (total items: 4)
+2026-02-01 02:20:03 | INFO     | app.services.document_service | Ingesting document: healthcare_ai.txt (694 chars) as 20260131_232003_healthcare_ai.txt_c8b8661b
+2026-02-01 02:20:03 | INFO     | app.services.document_service | Created 2 chunks for 20260131_232003_healthcare_ai.txt_c8b8661b
+2026-02-01 02:20:03 | INFO     | app.services.document_service | Generated 2 embeddings (dim=384)
+2026-02-01 02:20:03 | INFO     | app.services.search_service | Stored 2 chunks for document 20260131_232003_healthcare_ai.txt_c8b8661b (total items: 6)
+2026-02-01 02:20:06 | ERROR    | chromadb.telemetry.product.posthog | Failed to send telemetry event CollectionQueryEvent: capture() takes 1 positional argument but 3 were given
+2026-02-01 02:20:06 | INFO     | app.services.search_service | Search query 'What are the main applications of artificial intel...' returned 3 results (threshold: 0.3)
+2026-02-01 02:20:06 | INFO     | app.services.search_service | Search query 'How does machine learning work?...' returned 3 results (threshold: 0.3)
+2026-02-01 02:20:06 | INFO     | app.services.search_service | Search query 'What role does AI play in healthcare?...' returned 3 results (threshold: 0.3)
+2026-02-01 02:20:31 | INFO     | app.main | Shutting down application...
+2026-02-01 02:20:31 | INFO     | app.main | Cleanup complete
+2026-02-04 23:05:21 | INFO     | app.utils.logger | Logging initialized at INFO level
+2026-02-04 23:05:21 | INFO     | app.utils.logger | Log file: C:\Users\pavic\OneDrive\Desktop\research-assistant\logs\app.log
+2026-02-04 23:05:21 | INFO     | app.main | ================================================================================
+2026-02-04 23:05:21 | INFO     | app.main | Starting AI Research Assistant v1.0.0
+2026-02-04 23:05:21 | INFO     | app.main | ================================================================================
+2026-02-04 23:05:21 | INFO     | app.main | Loading embedding model...
+2026-02-04 23:05:21 | INFO     | app.main | ✓ Embedding model loaded successfully
+2026-02-04 23:05:21 | INFO     | app.main | Connecting to vector database...
+2026-02-04 23:05:21 | ERROR    | chromadb.telemetry.product.posthog | Failed to send telemetry event CollectionGetEvent: capture() takes 1 positional argument but 3 were given
+2026-02-04 23:05:21 | INFO     | app.main | ✓ Vector database connected: {'total_chunks': 6, 'total_documents': 3, 'collection_name': 'research_documents', 'embedding_dimension': 384}
+2026-02-04 23:05:21 | INFO     | app.main | ================================================================================
+2026-02-04 23:05:21 | INFO     | app.main | Application ready to receive requests
+2026-02-04 23:05:21 | INFO     | app.main | API: http://0.0.0.0:8000
+2026-02-04 23:05:21 | INFO     | app.main | Docs: http://0.0.0.0:8000/docs
+2026-02-04 23:05:21 | INFO     | app.main | ================================================================================
+2026-02-04 23:05:26 | INFO     | app.main | Shutting down application...
+2026-02-04 23:05:26 | INFO     | app.main | Cleanup complete
+2026-02-04 23:06:22 | INFO     | app.utils.logger | Logging initialized at INFO level
+2026-02-04 23:06:22 | INFO     | app.utils.logger | Log file: C:\Users\pavic\OneDrive\Desktop\research-assistant\logs\app.log
+2026-02-04 23:06:22 | INFO     | app.main | ================================================================================
+2026-02-04 23:06:22 | INFO     | app.main | Starting AI Research Assistant v1.0.0
+2026-02-04 23:06:22 | INFO     | app.main | ================================================================================
+2026-02-04 23:06:22 | INFO     | app.main | Loading embedding model...
+2026-02-04 23:06:22 | INFO     | app.main | ✓ Embedding model loaded successfully
+2026-02-04 23:06:22 | INFO     | app.main | Connecting to vector database...
+2026-02-04 23:06:22 | ERROR    | chromadb.telemetry.product.posthog | Failed to send telemetry event CollectionGetEvent: capture() takes 1 positional argument but 3 were given
+2026-02-04 23:06:22 | INFO     | app.main | ✓ Vector database connected: {'total_chunks': 6, 'total_documents': 3, 'collection_name': 'research_documents', 'embedding_dimension': 384}
+2026-02-04 23:06:22 | INFO     | app.main | ================================================================================
+2026-02-04 23:06:22 | INFO     | app.main | Application ready to receive requests
+2026-02-04 23:06:22 | INFO     | app.main | API: http://0.0.0.0:8000
+2026-02-04 23:06:22 | INFO     | app.main | Docs: http://0.0.0.0:8000/docs
+2026-02-04 23:06:22 | INFO     | app.main | ================================================================================
+2026-02-04 23:07:58 | INFO     | app.services.document_service | Ingesting document: test.txt (27 chars) as 20260204_200758_test.txt_aa6ec72b
+2026-02-04 23:07:58 | INFO     | app.services.document_service | Created 1 chunks for 20260204_200758_test.txt_aa6ec72b
+2026-02-04 23:07:58 | INFO     | app.services.document_service | Generated 1 embeddings (dim=384)
+2026-02-04 23:07:58 | ERROR    | chromadb.telemetry.product.posthog | Failed to send telemetry event CollectionAddEvent: capture() takes 1 positional argument but 3 were given
+2026-02-04 23:07:58 | INFO     | app.services.search_service | Stored 1 chunks for document 20260204_200758_test.txt_aa6ec72b (total items: 7)
+2026-02-04 23:08:11 | ERROR    | chromadb.telemetry.product.posthog | Failed to send telemetry event CollectionQueryEvent: capture() takes 1 positional argument but 3 were given
+2026-02-04 23:08:11 | INFO     | app.services.search_service | Search query 'machine learning...' returned 5 results (threshold: 0.3)
+2026-02-04 23:09:44 | INFO     | app.api.routes.ingest | Processing PDF file: GetPdf.pdf
+2026-02-04 23:09:46 | INFO     | app.services.document_service | Ingesting document: GetPdf.pdf (66933 chars) as 20260204_200946_GetPdf.pdf_a9f283d3
+2026-02-04 23:09:46 | INFO     | app.services.document_service | Created 167 chunks for 20260204_200946_GetPdf.pdf_a9f283d3
+2026-02-04 23:09:52 | INFO     | app.services.document_service | Generated 167 embeddings (dim=384)
+2026-02-04 23:09:52 | INFO     | app.services.search_service | Stored 167 chunks for document 20260204_200946_GetPdf.pdf_a9f283d3 (total items: 174)
+2026-02-04 23:10:00 | INFO     | app.api.routes.ingest | Processing PDF file: GetPdf.pdf
+2026-02-04 23:10:03 | INFO     | app.services.document_service | Ingesting document: GetPdf.pdf (66933 chars) as 20260204_201003_GetPdf.pdf_fa1e23a8
+2026-02-04 23:10:03 | INFO     | app.services.document_service | Created 167 chunks for 20260204_201003_GetPdf.pdf_fa1e23a8
+2026-02-04 23:10:08 | INFO     | app.services.document_service | Generated 167 embeddings (dim=384)
+2026-02-04 23:10:09 | INFO     | app.services.search_service | Stored 167 chunks for document 20260204_201003_GetPdf.pdf_fa1e23a8 (total items: 341)
+2026-02-04 23:10:12 | INFO     | app.services.search_service | Search query 'formal...' returned 3 results (threshold: 0.3)

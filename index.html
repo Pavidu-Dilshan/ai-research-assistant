@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Research Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            background: #f8f9ff;
+            border-color: #764ba2;
+        }
+
+        .upload-area.dragging {
+            background: #f0f3ff;
+            border-color: #764ba2;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results {
+            grid-column: 1 / -1;
+        }
+
+        .result-item {
+            background: #f8f9ff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-score {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .result-text {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .summary-box h3 {
+            margin-bottom: 10px;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .document-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .document-item {
+            background: #f8f9ff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .document-meta {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Research Assistant</h1>
+            <p>Upload documents and search with AI-powered semantic search</p>
+        </div>
+
+        <div class="main-grid">
+            <!-- Upload Section -->
+            <div class="card">
+                <h2>📄 Upload Document</h2>
+                <div id="status"></div>
+                <div class="upload-area" id="uploadArea">
+                    <p style="font-size: 3em; margin-bottom: 10px;">📎</p>
+                    <p style="font-size: 1.1em; margin-bottom: 10px;">
+                        <strong>Drop files here or click to browse</strong>
+                    </p>
+                    <p style="color: #666; font-size: 0.9em;">
+                        Supports: PDF, TXT, MD
+                    </p>
+                    <input type="file" id="fileInput" accept=".pdf,.txt,.md">
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="card">
+                <h2>🔍 Search Documents</h2>
+                <input type="text" class="search-box" id="searchBox" placeholder="Ask a question about your documents...">
+                <button onclick="search()" id="searchBtn">Search</button>
+                <p style="margin-top: 15px; color: #666; font-size: 0.9em;">
+                    Example: "What are the main findings?" or "Summarize the methodology"
+                </p>
+            </div>
+
+            <!-- Documents List -->
+            <div class="card">
+                <h2>📚 Your Documents</h2>
+                <button onclick="loadDocuments()" style="margin-bottom: 15px; font-size: 14px;">
+                    🔄 Refresh List
+                </button>
+                <div class="document-list" id="documentList">
+                    <p style="color: #666; text-align: center;">Loading...</p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="card">
+                <h2>📊 System Stats</h2>
+                <div id="stats" style="color: #666;">
+                    Loading statistics...
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="card results" id="resultsCard" style="display: none;">
+                <h2>🎯 Search Results</h2>
+                <div id="results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        // File upload
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragging');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragging');
+        });
+
+        uploadArea.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragging');
+            const file = e.dataTransfer.files[0];
+            if (file) await uploadFile(file);
+        });
+
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) await uploadFile(file);
+        });
+
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            showStatus('Uploading and processing...', 'loading');
+
+            try {
+                const response = await fetch(`${API_BASE}/ingest/file`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showStatus(`✅ Success! Created ${data.chunks_created} chunks`, 'success');
+                    loadDocuments();
+                    loadStats();
+                } else {
+                    showStatus(`❌ Error: ${data.detail}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Upload failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function search() {
+            const query = document.getElementById('searchBox').value;
+            if (!query.trim()) {
+                alert('Please enter a search query');
+                return;
+            }
+
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.disabled = true;
+            searchBtn.textContent = 'Searching...';
+
+            try {
+                const response = await fetch(`${API_BASE}/query/search`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: query,
+                        top_k: 5,
+                        include_summary: true
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    alert(`Search failed: ${data.detail}`);
+                }
+            } catch (error) {
+                alert(`Search error: ${error.message}`);
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.textContent = 'Search';
+            }
+        }
+
+        function displayResults(data) {
+            const resultsCard = document.getElementById('resultsCard');
+            const resultsDiv = document.getElementById('results');
+
+            let html = '';
+
+            if (data.summary) {
+                html += `
+                    <div class="summary-box">
+                        <h3>📝 Summary</h3>
+                        <p>${data.summary}</p>
+                    </div>
+                `;
+            }
+
+            if (data.results.length === 0) {
+                html += '<p style="text-align: center; color: #666;">No results found. Try a different query.</p>';
+            } else {
+                html += `<p style="margin-bottom: 15px; color: #666;">Found ${data.total_results} relevant chunks:</p>`;
+                data.results.forEach((result, i) => {
+                    html += `
+                        <div class="result-item">
+                            <span class="result-score">Score: ${(result.score * 100).toFixed(1)}%</span>
+                            <div class="result-text">${result.text}</div>
+                            <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                                Source: ${result.metadata.source}
+                            </p>
+                        </div>
+                    `;
+                });
+            }
+
+            resultsDiv.innerHTML = html;
+            resultsCard.style.display = 'block';
+            resultsCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function loadDocuments() {
+            try {
+                const response = await fetch(`${API_BASE}/ingest/documents`);
+                const data = await response.json();
+
+                const listDiv = document.getElementById('documentList');
+
+                if (data.documents.length === 0) {
+                    listDiv.innerHTML = '<p style="text-align: center; color: #666;">No documents yet. Upload one to get started!</p>';
+                } else {
+                    let html = '';
+                    data.documents.forEach(doc => {
+                        html += `
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-name">📄 ${doc.source}</div>
+                                    <div class="document-meta">
+                                        ${doc.chunk_count} chunks • Uploaded: ${new Date(doc.ingested_at).toLocaleString()}
+                                    </div>
+                                </div>
+                                <button class="delete-btn" onclick="deleteDocument('${doc.document_id}')">Delete</button>
+                            </div>
+                        `;
+                    });
+                    listDiv.innerHTML = html;
+                }
+            } catch (error) {
+                document.getElementById('documentList').innerHTML = '<p style="color: red;">Failed to load documents</p>';
+            }
+        }
+
+        async function deleteDocument(docId) {
+            if (!confirm('Are you sure you want to delete this document?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/ingest/documents/${docId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showStatus('✅ Document deleted', 'success');
+                    loadDocuments();
+                    loadStats();
+                } else {
+                    showStatus('❌ Failed to delete document', 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+
+                document.getElementById('stats').innerHTML = `
+                    <p style="margin-bottom: 10px;"><strong>📊 Total Documents:</strong> ${data.total_documents}</p>
+                    <p style="margin-bottom: 10px;"><strong>📦 Total Chunks:</strong> ${data.total_chunks}</p>
+                    <p style="margin-bottom: 10px;"><strong>🤖 Model:</strong> ${data.embedding_model}</p>
+                    <p><strong>💾 Vector DB:</strong> ${data.vector_store}</p>
+                `;
+            } catch (error) {
+                document.getElementById('stats').innerHTML = '<p style="color: red;">Failed to load stats</p>';
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        // Search on Enter key
+        document.getElementById('searchBox').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') search();
+        });
+
+        // Load initial data
+        loadDocuments();
+        loadStats();
+    </script>
+</body>
+</html>
